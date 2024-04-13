@@ -1,6 +1,7 @@
 from pawn import Pawn
 from piece import Piece
 from bishop import Bishop
+from rook import Rook
 
 class Board:
     def __init__(self):
@@ -77,9 +78,6 @@ def move_piece(board, start, end):
     return False
 
 
-class Rook(Piece):
-    def is_valid_move(self, board, start, end):
-       pass
 class Queen(Piece):
     def is_valid_move(self, board, start, end):
        pass
