@@ -2,6 +2,7 @@ from pawn import Pawn
 from piece import Piece
 from bishop import Bishop
 from rook import Rook
+import copy
 
 class Board:
     def __init__(self):
@@ -92,25 +93,71 @@ def is_check(board, current_player):
             # then check to see if it is the current player's color
             elif piece.color == current_player[0]:
                 continue
-            # if so, continue
+            # if the piece is the other player's piece, continue
             else:
                 position = piece.indices_to_position(i, j)
                 # get all possible squares the piece could move to
                 possible_destinations = piece.possible_destinations(board, position)
                 for destination in possible_destinations:
-                    # if the other player's king is reachable, return true
-                    #print(f"Position {piece.indices_to_position(destination[0], destination[1])}, type {type(board.grid[destination[0]][destination[1]])}" )
+                    # if the current player's king is reachable, return true
                     if type(board.grid[destination[0]][destination[1]]) == King and board.grid[destination[0]][destination[1]].color == current_player[0]:
                         return True
     # otherwise, return false
     return False
 
 
-def is_checkmate(board):
+def is_checkmate(board, current_player):
     # to be implemented
     # IDEA: FIND ALL POSSIBLE BOARD CONFIGURATIONS WITH THE MOVES YOU CAN CURRENTLY TAKE.
     # THEN RUN IS_CHECK ON ALL OF THEM. IF ALL CONFIGURATIONS ARE IN CHECK, RETURN TRUE, IF NOT, FALSE
-    pass
+    # used for checkmate
+    possible_moves = set()
+    # is check var
+    check = False
+    
+    # iterate over chess board
+    for j in range(len(board.grid[0])):
+        for i in range(len(board.grid)):
+            piece = board.grid[i][j]
+            # first check to see if square is empty
+            if piece == None:
+                continue
+            # then check to see if it is not the current player's color
+            elif piece.color != current_player[0]:
+                continue
+            # if the piece is the current players piece, continue
+            else:
+                position = piece.indices_to_position(i, j)
+                # get all possible squares the piece could move to
+                possible_destinations = piece.possible_destinations(board, position)
+                for destination in possible_destinations:
+                    # add to possible moves
+                    possible_moves.add(f"{position} {piece.indices_to_position(destination[0], destination[1])}")
+    
+    # failsafe
+    if (len(possible_moves) == 0):
+        return False
+
+    # create multiple instances of board where each possible move is taken
+    possible_boards = []
+    for move in possible_moves:
+        newboard = copy.deepcopy(board)
+        start, end = move.split()
+        move_piece(newboard, start, end, current_player)
+        possible_boards.append(newboard)
+    
+    # iterate through all possibilities and if any are not in check, return false
+    for pboard in possible_boards:
+        if (is_check(pboard, current_player)):
+            continue
+        else:
+            return False
+    
+    # if all possibilities are in check, return true
+    return True
+
+
+
 
 class Queen(Piece):
     def is_valid_move(self, board, start, end):
@@ -129,9 +176,10 @@ def main():
     
     while True:
         print(f"{current_player}'s turn.")
+        # check for check
         if (is_check(board, current_player)):
-            # check for checkmate here
-            if (False):
+            # check for checkmate
+            if (is_checkmate(board, current_player)):
                 print(f"{current_player} is in checkmate.")
                 if current_player == 'White':
                     print("Black wins! Game ended. Thanks for playing!")
