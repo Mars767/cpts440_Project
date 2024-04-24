@@ -66,17 +66,51 @@ class Board:
         return row, col
 
     def is_empty(self, position):
-        row, col = self.parse_position(position)
+        #print(f"is empty - position = {position}")
+        if (type(position) == str):
+            row, col = self.parse_position(position)
+        else:
+            row, col = position[0], position[1]
         return self.grid[row][col] is None
 
-def move_piece(board, start, end):
+def move_piece(board, start, end, current_player):
     piece = board.get_piece(start)
-    if piece and piece.is_valid_move(board, start, end):
+    if piece and piece.is_valid_move(board, start, end) and piece.color == current_player[0]:
         board.set_piece(end, piece)
         board.set_piece(start, None)
         return True
     return False
 
+def is_check(board, current_player):
+    # iterate over chess board
+    for j in range(len(board.grid[0])):
+        for i in range(len(board.grid)):
+            piece = board.grid[i][j]
+            # first check to see if square is empty
+            if piece == None:
+                continue
+            # then check to see if it is the current player's color
+            elif piece.color == current_player[0]:
+                continue
+            # if so, continue
+            else:
+                position = piece.indices_to_position(i, j)
+                # get all possible squares the piece could move to
+                possible_destinations = piece.possible_destinations(board, position)
+                for destination in possible_destinations:
+                    # if the other player's king is reachable, return true
+                    #print(f"Position {piece.indices_to_position(destination[0], destination[1])}, type {type(board.grid[destination[0]][destination[1]])}" )
+                    if type(board.grid[destination[0]][destination[1]]) == King and board.grid[destination[0]][destination[1]].color == current_player[0]:
+                        return True
+    # otherwise, return false
+    return False
+
+
+def is_checkmate(board):
+    # to be implemented
+    # IDEA: FIND ALL POSSIBLE BOARD CONFIGURATIONS WITH THE MOVES YOU CAN CURRENTLY TAKE.
+    # THEN RUN IS_CHECK ON ALL OF THEM. IF ALL CONFIGURATIONS ARE IN CHECK, RETURN TRUE, IF NOT, FALSE
+    pass
 
 class Queen(Piece):
     def is_valid_move(self, board, start, end):
@@ -95,6 +129,18 @@ def main():
     
     while True:
         print(f"{current_player}'s turn.")
+        if (is_check(board, current_player)):
+            # check for checkmate here
+            if (False):
+                print(f"{current_player} is in checkmate.")
+                if current_player == 'White':
+                    print("Black wins! Game ended. Thanks for playing!")
+                    break
+                else:
+                    print("White wins! Game ended. Thanks for playing!")
+                    break
+            else:
+                print(f"{current_player} is in check.")
         command = input("Enter command (e.g., 'e2 e4' to move or 'quit' to end game): ")
 
         if command.strip().lower() == 'quit':
@@ -105,7 +151,7 @@ def main():
 
         try:
             start, end = command.split()
-            if not move_piece(board, start, end):
+            if not move_piece(board, start, end, current_player):
                 print("Invalid move, please try again.")
             else:
                 board.print_board()

@@ -8,7 +8,7 @@ class Pawn(Piece):
         
         # Diagonal capture
         if abs(start_col - end_col) == 1 and abs(start_row - end_row) == 1:
-            print("attempt diagonal capture")
+            #print("attempt diagonal capture")
             if (self.color == 'W' and end_row > start_row or self.color == 'B' and end_row < start_row):
                 target_piece = board.get_piece(end)
                 return target_piece is not None and target_piece.color != self.color
