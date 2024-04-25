@@ -2,6 +2,8 @@ from pawn import Pawn
 from piece import Piece
 from bishop import Bishop
 from rook import Rook
+from king import King
+from queen import Queen
 import copy
 from minimax import minimax
 
@@ -152,15 +154,6 @@ def is_checkmate(board, current_player):
     # if all possibilities are in check, return true
     return True
 
-
-
-
-class Queen(Piece):
-    def is_valid_move(self, board, start, end):
-       pass
-class King(Piece):
-    def is_valid_move(self, board, start, end):
-       pass
 class Knight(Piece):
     def is_valid_move(self, board, start, end):
        pass
