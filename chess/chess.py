@@ -3,6 +3,7 @@ from piece import Piece
 from bishop import Bishop
 from rook import Rook
 import copy
+from minimax import minimax
 
 class Board:
     def __init__(self):
@@ -107,13 +108,8 @@ def is_check(board, current_player):
 
 
 def is_checkmate(board, current_player):
-    # to be implemented
-    # IDEA: FIND ALL POSSIBLE BOARD CONFIGURATIONS WITH THE MOVES YOU CAN CURRENTLY TAKE.
-    # THEN RUN IS_CHECK ON ALL OF THEM. IF ALL CONFIGURATIONS ARE IN CHECK, RETURN TRUE, IF NOT, FALSE
     # used for checkmate
     possible_moves = set()
-    # is check var
-    check = False
     
     # iterate over chess board
     for j in range(len(board.grid[0])):
