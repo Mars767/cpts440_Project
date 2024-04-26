@@ -12,7 +12,7 @@ class Queen(Piece):
             col_step = 1 if end_col > start_col else -1 if end_col < start_col else 0
             row, col = start_row + row_step, start_col + col_step
             while row != end_row or col != end_col:
-                if not board.is_empty(self.indices_to_position(row, col):
+                if not board.is_empty(self.indices_to_position(row, col)):
                     return False
                 row += row_step
                 col += col_step
