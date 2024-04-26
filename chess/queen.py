@@ -3,7 +3,7 @@ from piece import Piece
 class Queen(Piece):
     def is_valid_move(self, board, start, end):
         start_row, start_col = board.parse_position(start)
-        end_row, end_col = board.parse_postition(end)
+        end_row, end_col = board.parse_position(end)
 
         # Queen pieces can move horizontally, vertically, or diagonally
         if start_row == end_row or start_col == end_col or abs(end_row - start_row) == abs(end_col - start_col):

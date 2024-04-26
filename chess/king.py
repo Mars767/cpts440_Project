@@ -2,7 +2,7 @@ from piece import Piece
 
 class King(Piece):
     def is_valid_move(self, board, start, end):
-        start_row, start_col = board.parse_postition(start)
+        start_row, start_col = board.parse_position(start)
         end_row, end_col = board.parse_position(end)
 
         # King pieces can move one square in any direction
