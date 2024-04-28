@@ -93,56 +93,56 @@ def heuristic(board, color):
     for i in range(8):
         for j in range(8):
         #check each square to see its state
-            if not(board[i][j] is None):
+            if not(board.grid[i][j] is None):
                 #check which kind of piece it is: if it is white, add, if it is black, subtract If it is the other color subtract
                 #add 1 to each of the pieces values for each square it has advanced beyond its starting position
-                if isinstance(board[i][j], Pawn):
-                    if board[i][j].color == color[0]:
+                if isinstance(board.grid[i][j], Pawn):
+                    if board.grid[i][j].color == color[0]:
                         if color == 'White':
                             value += i-1
                         else:
                             value -= 6-i
-                    if board[i][j].color == 'W':
+                    if board.grid[i][j].color == 'W':
                         value += 1
                     else:
                         value -= 1
-                if isinstance(board[i][j], Bishop):
-                    if board[i][j].color == color[0]:
+                if isinstance(board.grid[i][j], Bishop):
+                    if board.grid[i][j].color == color[0]:
                         if color == 'White':
                             value += i
                         else:
                             value -= 7-i
-                    if board[i][j].color == 'W':
+                    if board.grid[i][j].color == 'W':
                         value += 3
                     else:
                         value -= 3
-                if isinstance(board[i][j], Knight):
-                    if board[i][j].color == color[0]:
+                if isinstance(board.grid[i][j], Knight):
+                    if board.grid[i][j].color == color[0]:
                         if color == 'White':
                             value += i
                         else:
                             value -= 7-i
-                    if board[i][j].color == 'W':
+                    if board.grid[i][j].color == 'W':
                         value += 3
                     else:
                         value -= 3
-                if isinstance(board[i][j], Rook):
-                    if board[i][j].color == color[0]:
+                if isinstance(board.grid[i][j], Rook):
+                    if board.grid[i][j].color == color[0]:
                         if color == 'White':
                             value += i
                         else:
                             value -= 7-i
-                    if board[i][j].color == 'W':
+                    if board.grid[i][j].color == 'W':
                         value += 5
                     else:
                         value -= 5
-                if isinstance(board[i][j], Queen):
-                    if board[i][j].color == color[0]:
+                if isinstance(board.grid[i][j], Queen):
+                    if board.grid[i][j].color == color[0]:
                         if color == 'White':
                             value += i
                         else:
                             value -= 7-i
-                    if board[i][j].color == 'W':
+                    if board.grid[i][j].color == 'W':
                         value += 9
                     else:
                         value -= 9
@@ -201,12 +201,17 @@ def minimaxN(board, current_player, N):
 
         # recursive step
         if N>1:
-            temp_best_move = minimaxN(newboard, current_player, N-1)
-            s, e = temp_best_move.split()
-            move_piece(newboard, s, e, current_player)
+            if current_player == 'White':
+                temp_best_move = minimaxN(newboard, 'Black', N-1)
+                s, e = temp_best_move.split()
+                move_piece(newboard, s, e, 'Black')
+            else:
+                temp_best_move = minimaxN(newboard, 'White', N-1)
+                s, e = temp_best_move.split()
+                move_piece(newboard, s, e, 'White')
         
         # find heuristic value of current state of the board and add to scores
-        scores.append(heuristic(board, current_player))
+        scores.append(heuristic(newboard, current_player))
     
     # assuming that White is the max player and Black is the min player
     if current_player == 'White':
@@ -219,6 +224,7 @@ def minimaxN(board, current_player, N):
 
 # minimax algorithm wrapper function
 def minimax(board, current_player):
-    # start with N=1 for testing purposes
+    # start with N=1 for testing purposes.
+    # if we change to N=2, the alg takes a little while to compute
     N = 1
     return minimaxN(board, current_player, N)

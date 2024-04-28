@@ -5,8 +5,9 @@ from knight import Knight
 from rook import Rook
 from king import King
 from queen import Queen
-import copy
 from minimax import minimax
+import copy
+import random
 
 class Board:
     def __init__(self):
@@ -158,7 +159,13 @@ def is_checkmate(board, current_player):
 def main():
     board = Board()
     board.print_board()
+    coin = random.randint(0, 1)
+    if coin == 0:
+        user_player = 'White'
+    else:
+        user_player = 'Black'
     current_player = 'White'
+    print(f"You are playing as the {user_player} player!")
     
     while True:
         print(f"{current_player}'s turn.")
@@ -175,22 +182,34 @@ def main():
                     break
             else:
                 print(f"{current_player} is in check.")
-        command = input("Enter command (e.g., 'e2 e4' to move or 'quit' to end game): ")
+        # minimax's turn!
+        if current_player != user_player:
+            # get a move from the algorithm, move the piece, change current player, and continue
+            minimax_move = minimax(board, current_player)
+            s, e = minimax_move.split()
+            move_piece(board, s, e, current_player)
+            board.print_board()
+            print(f"Minimax made move -> {minimax_move}")
+            current_player = 'Black' if current_player == 'White' else 'White'
+        # user's turn!
+        else:
+            # get a move from the user, move the piece, change current player
+            command = input("Enter command (e.g., 'e2 e4' to move or 'quit' to end game): ")
 
-        if command.strip().lower() == 'quit':
-            confirm = input("Are you sure you want to quit the game? (yes/no): ")
-            if confirm.lower() == 'yes':
-                print("Game ended. Thanks for playing!")
-                break
+            if command.strip().lower() == 'quit':
+                confirm = input("Are you sure you want to quit the game? (yes/no): ")
+                if confirm.lower() == 'yes':
+                    print("Game ended. Thanks for playing!")
+                    break
 
-        try:
-            start, end = command.split()
-            if not move_piece(board, start, end, current_player):
-                print("Invalid move, please try again.")
-            else:
-                board.print_board()
-                current_player = 'Black' if current_player == 'White' else 'White'
-        except ValueError:
-            print("Please enter a valid command (e.g., 'e2 e4').")
+            try:
+                start, end = command.split()
+                if not move_piece(board, start, end, current_player):
+                    print("Invalid move, please try again.")
+                else:
+                    board.print_board()
+                    current_player = 'Black' if current_player == 'White' else 'White'
+            except ValueError:
+                print("Please enter a valid command (e.g., 'e2 e4').")
 
 main()
