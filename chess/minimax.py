@@ -1,5 +1,5 @@
+import copy
 from copy import deepcopy
-
 from pawn import Pawn
 from piece import Piece
 from bishop import Bishop
