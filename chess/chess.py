@@ -1,6 +1,7 @@
 from pawn import Pawn
 from piece import Piece
 from bishop import Bishop
+from knight import Knight
 from rook import Rook
 from king import King
 from queen import Queen
@@ -153,10 +154,6 @@ def is_checkmate(board, current_player):
     
     # if all possibilities are in check, return true
     return True
-
-class Knight(Piece):
-    def is_valid_move(self, board, start, end):
-       pass
 
 def main():
     board = Board()
