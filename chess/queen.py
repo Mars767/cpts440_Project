@@ -5,6 +5,10 @@ class Queen(Piece):
         start_row, start_col = board.parse_position(start)
         end_row, end_col = board.parse_position(end)
 
+        # Check if the end position contains a piece of the same color
+        if board.get_piece(end) is not None and board.get_piece(end).color == self.color:
+            return False
+
         # Queen pieces can move horizontally, vertically, or diagonally
         if start_row == end_row or start_col == end_col or abs(end_row - start_row) == abs(end_col - start_col):
             # Checking if any pieces are blocking the path
