@@ -1,4 +1,5 @@
 import copy
+import math
 from copy import deepcopy
 from pawn import Pawn
 from piece import Piece
@@ -171,7 +172,7 @@ def heuristic(board, color):
     return value
 
 # minimax algorithm (reference https://blog.devgenius.io/simple-min-max-chess-ai-in-python-2910a3602641)
-def minimaxN(board, current_player, N):
+def minimaxN(board, current_player, N, alpha, beta):
     # get all possible moves
     possible_moves = set()
     # iterate over chess board
@@ -197,26 +198,38 @@ def minimaxN(board, current_player, N):
     scores = []
     moves = list(possible_moves)
 
+    maxVal = -math.inf
+    minVal = math.inf
+
     # iterate over all possible moves
     for move in moves:
         # create a copy of the current board and take move
         newboard = deepcopy(board)
         start, end = move.split()
         move_piece(newboard, start, end, current_player)
-
         # recursive step
         if N>1:
             if current_player == 'White':
-                temp_best_move = minimaxN(newboard, 'Black', N-1)
+                temp_best_move = minimaxN(newboard, 'Black', N-1, alpha, beta)
+                if len(scores) > 0:
+                    maxVal = max(maxVal, max(scores))
+                alpha = max(alpha, maxVal)
                 s, e = temp_best_move.split()
                 move_piece(newboard, s, e, 'Black')
             else:
-                temp_best_move = minimaxN(newboard, 'White', N-1)
+                temp_best_move = minimaxN(newboard, 'White', N-1, alpha, beta)
                 s, e = temp_best_move.split()
+                if len(scores) > 0:
+                    minVal = min(minVal, min(scores))
+                beta = min(beta, minVal)
                 move_piece(newboard, s, e, 'White')
         
         # find heuristic value of current state of the board and add to scores
         scores.append(heuristic(newboard, current_player))
+
+        if  beta <= alpha:
+            print("broken")
+            break
     
     # assuming that White is the max player and Black is the min player
     if current_player == 'White':
@@ -231,5 +244,7 @@ def minimaxN(board, current_player, N):
 def minimax(board, current_player):
     # start with N=1 for testing purposes.
     # if we change to N=2, the alg takes a little while to compute
-    N = 1
-    return minimaxN(board, current_player, N)
+    N = 2
+    alpha = -math.inf
+    beta = math.inf
+    return minimaxN(board, current_player, N, alpha, beta)
