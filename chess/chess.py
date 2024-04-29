@@ -88,6 +88,18 @@ def move_piece(board, start, end, current_player):
     return False
 
 def is_check(board, current_player):
+
+    #check to see if king still exists, to avoid the game continuing if they do not move out of check
+    kingExists = False
+    for j in range(len(board.grid[0])):
+        for i in range(len(board.grid)):
+            piece = board.grid[i][j]
+            if isinstance(piece, King):
+                if piece.color == current_player[0]:
+                    kingExists = True
+    if kingExists == False:
+        return True
+    
     # iterate over chess board
     for j in range(len(board.grid[0])):
         for i in range(len(board.grid)):
@@ -114,6 +126,17 @@ def is_check(board, current_player):
 def is_checkmate(board, current_player):
     # used for checkmate
     possible_moves = set()
+
+    #check to see if king still exists, to avoid the game continuing if they do not move out of check
+    kingExists = False
+    for j in range(len(board.grid[0])):
+        for i in range(len(board.grid)):
+            piece = board.grid[i][j]
+            if isinstance(piece, King):
+                if piece.color == current_player[0]:
+                    kingExists = True
+    if kingExists == False:
+        return True
     
     # iterate over chess board
     for j in range(len(board.grid[0])):
