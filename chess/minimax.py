@@ -146,14 +146,19 @@ def heuristic(board, color):
                         value += 9
                     else:
                         value -= 9
+                if isinstance(board.grid[i][j], King):
+                    if board.grid[i][j].color == 'W':
+                        value += 1000
+                    else:
+                        value -= 1000
 
 
     #check for checkmate: use function developed in the other main program to determine if checkmate is possible for either, these should always be prioritized
     if is_checkmate(board, 'B'):
-        value += 1000
+        value += 500
 
     if is_checkmate(board, 'W'):
-        value -= 1000
+        value -= 500
 
     #do the same for check
     if is_check(board, 'B'):
